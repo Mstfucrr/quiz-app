@@ -2,8 +2,12 @@ import { useQuestion } from '@/hooks/useQuestion'
 import settings from '@/static/settings'
 import React, { useMemo } from 'react'
 
-const QuizHeader = () => {
-  const { answeredQuestions, quizQuestions, timer } = useQuestion()
+type Props = {
+  timer: number
+}
+
+const QuizHeader = ({ timer }: Props) => {
+  const { answeredQuestions, quizQuestions } = useQuestion()
 
   const timerLabel = useMemo(() => {
     const countdown = settings.QUESTION_TIME_LIMIT - timer
