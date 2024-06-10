@@ -17,6 +17,9 @@ const defaultProviderValue: {
   handleAnswer: (answer: string | null) => void
   timer: number
   finished: boolean
+  isRunning: boolean
+  startTimer: () => void
+  stopTimer: () => void
 } = {
   currentQuestion: {} as QuizQuestion,
   quizQuestions: [],
@@ -26,7 +29,10 @@ const defaultProviderValue: {
   answeredQuestions: [],
   handleAnswer: () => {},
   timer: 0,
-  finished: false
+  finished: false,
+  isRunning: false,
+  startTimer: () => {},
+  stopTimer: () => {}
 }
 
 const QuestionContext = createContext(defaultProviderValue)
@@ -42,6 +48,7 @@ interface AnsweredQuestion {
 
 const QuestionProvider = ({ children }: Props) => {
   const { data, isPending } = useGetData()
+  const { timer, resetTimer, isRunning, startTimer, stopTimer } = useTimer()
 
   const quizQuestions = useMemo(() => quizGenerator(data), [data])
   const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion>(quizQuestions[0])
@@ -49,24 +56,18 @@ const QuestionProvider = ({ children }: Props) => {
   const [answerable, setAnswerable] = useState<boolean>(false)
   const finished = useMemo(() => answeredQuestions.length === settings.QUESTIN_COUNT, [answeredQuestions])
 
-  // generate quiz questions
-
-  const { timer, resetTimer } = useTimer()
-
-  // 10 saniye geçtiğinde cevap verilebilir olacak
+  // if timer is greater than or equal to the answer time, set answerable to true
   useEffect(() => {
     if (timer >= settings.ANSWER_TIME) setAnswerable(true)
-  }, [timer])
+  }, [timer, isRunning])
 
-  // 30 saneye geçtiğinde null cevap verilmiş sayılacak ve bir sonraki soruya geçilecek
+  // if timer is equal to the question time limit, answer (null) and reset timer
   useEffect(() => {
     if (timer === settings.QUESTION_TIME_LIMIT) {
       handleAnswer(null)
       resetTimer()
     }
-  }, [timer])
-
-  // answer question
+  }, [timer, isRunning])
 
   const handleAnswer = (answer: string | null) => {
     if (!answerable) return
@@ -92,7 +93,10 @@ const QuestionProvider = ({ children }: Props) => {
     answeredQuestions,
     handleAnswer,
     timer,
-    finished
+    finished,
+    isRunning,
+    startTimer,
+    stopTimer
   }
 
   return <QuestionContext.Provider value={value}>{children}</QuestionContext.Provider>
