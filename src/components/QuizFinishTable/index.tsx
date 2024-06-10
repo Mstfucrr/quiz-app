@@ -16,7 +16,7 @@ const QuizFinishTable = () => {
           <thead>
             <tr className='sticky top-0 border-b-2 border-solid border-slate-800 bg-white text-left'>
               <th className='pl-2'>Question</th>
-              <th className='pl-2'>True Answer</th>
+              <th className='pl-2'>Correct answer</th>
               <th className='pl-2'>Your Answer</th>
             </tr>
           </thead>
