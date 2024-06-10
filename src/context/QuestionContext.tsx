@@ -19,7 +19,6 @@ const defaultProviderValue: {
   finished: boolean
   isRunning: boolean
   startTimer: () => void
-  stopTimer: () => void
 } = {
   currentQuestion: {} as QuizQuestion,
   quizQuestions: [],
@@ -31,8 +30,7 @@ const defaultProviderValue: {
   timer: 0,
   finished: false,
   isRunning: false,
-  startTimer: () => {},
-  stopTimer: () => {}
+  startTimer: () => {}
 }
 
 const QuestionContext = createContext(defaultProviderValue)
@@ -48,7 +46,7 @@ interface AnsweredQuestion {
 
 const QuestionProvider = ({ children }: Props) => {
   const { data, isPending } = useGetData()
-  const { timer, resetTimer, isRunning, startTimer, stopTimer } = useTimer()
+  const { timer, resetTimer, isRunning, startTimer } = useTimer()
 
   const quizQuestions = useMemo(() => quizGenerator(data), [data])
   const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion>(quizQuestions[0])
@@ -95,8 +93,7 @@ const QuestionProvider = ({ children }: Props) => {
     timer,
     finished,
     isRunning,
-    startTimer,
-    stopTimer
+    startTimer
   }
 
   return <QuestionContext.Provider value={value}>{children}</QuestionContext.Provider>
