@@ -14,7 +14,6 @@
  * console.log(settings.QUESTION_TIME_LIMIT) // 30 (default)
  *
  */
-
 export default {
   QUESTIN_COUNT: 10,
   ANSWER_TIME: 10,
